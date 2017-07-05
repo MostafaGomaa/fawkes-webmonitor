@@ -13,7 +13,7 @@ function robotInfo( robot_name , bridge_connection )
 	$container_header.append($("<h1>"+robot_name+"</h1>").addClass("container_header_element"));
 	$container_div.append($container_header);
 
-	
+
 	$(document).ready(function()
 	{
 		
@@ -394,17 +394,25 @@ function robotInfo( robot_name , bridge_connection )
 
 		  	});
 
-
-
 		  	$container_div.append($skills_wedgit_div);
-
 		}
-
-
-
-
 
 	});
 
+
+}
+
+
+
+
+function unload_robotInfo( robot_name , bridge_connection )
+{
+	//var robot_name="Robot 1";
+	var destination_bridge_name= "clips";
+	var provided_tools= { tasks:true , state:true , lock_role: true , locked_resource: true , skills : true , holding : true} ;
+	var container_id=	"robot_info__"+robot_name;
+
+	var $container_div= $( "#"+container_id );// div contaning the wedgi
+	$container_div.addClass("inactive");
 
 }

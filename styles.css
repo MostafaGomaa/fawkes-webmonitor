@@ -46,10 +46,13 @@ html, body {
 }
 .container_header_element
 {
-   
     display: inline-block;
     border :none;
     position: relative;
+}
+
+.inactive{
+    color: red;
 }
 
 div[id^="holding__"] 

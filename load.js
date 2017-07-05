@@ -4,7 +4,7 @@ var order_facts;// to hold the updated json contaning the "order" facts
 
 window.throttle_rate = 1000;
 window.tf_throttle_rate = 1000;
-var remote = false;
+var remote = true;
 
 var __robots = [];
 
@@ -20,6 +20,7 @@ var order_wedgit ;
 var product_wedgit;
 var exploration_results_wedgit  ;
 var mps_monitor;
+var robot_info
 
 
 
@@ -86,7 +87,33 @@ function connect() {
     __robots.push ( robot_info ) ;
     load( robot_info );
   });
+
+
+
+r1_con.on('close', function() {
+  var robot_info = { name: "R1"  , connection : r1_con , alive: true }  ;
+  __robots.push (  robot_info ) ;  
+  unload( robot_info );
+});
+
+r2_con.on('close', function() {
+  var robot_info = { name: "R2"  , connection : r2_con , alive: true} ;
+  __robots.push ( robot_info  ) ;
+  unload( robot_info );
+});
+ 
+
+r3_con.on('close', function() {
+  var robot_info = { name: "R3"  , connection : r3_con , alive: true } ;
+  __robots.push ( robot_info ) ;
+  unload( robot_info );
+  });
+
+
 }
+
+
+
 
 function init(){
   if ( intialiazed_ ) { return ; }
@@ -120,11 +147,17 @@ function load( robot_info ){
   map                        . visualize_marker ( robot_info , robot_info );
   
   // if(robot_info. name == "R1"){
-    map                        . visualize_marker_array (robot_info);
+    // map                        . visualize_marker_array (robot_info);
   // }
   
   product_wedgit             . visualize( robot_info );
   order_wedgit               . visualize( robot_info );
 
   robotInfo( robot_info.name , robot_info.connection );
+}
+
+
+function unload( robot_info ){
+
+  unload_robotInfo( robot_info.name , robot_info.connection );
 }
