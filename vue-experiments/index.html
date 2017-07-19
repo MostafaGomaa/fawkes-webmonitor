@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+ 
+  <head>  
+    <meta charset="utf-8" />   
+
+    <script src="../lib/jquery-2.2.3.min.js" ></script>
+    <script src="../lib/three.js"></script>
+    <script src="../lib/eventemitter2.min.js"></script>
+    <script src="../lib/roslibjs/build/roslib.min.js"></script>
+    <script src="../lib/ros3djs/build/ros3d.min.js"></script>
+
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="connect.js"></script>
+
+ 
+
+  </head>
+
+  <body onload="connect()">
+
+
+  <div id="subscription">
+    
+   
+    <button v-on:click="subscribe">
+      Subscribe
+    </button>
+    <input v-model="input_text">
+
+    <p> {{ my_robot_info.name}}</p>
+
+  </div>
+
+  <script src="subscribe.js"></script>  
+
+  </body>
+
+</html>
+ 
