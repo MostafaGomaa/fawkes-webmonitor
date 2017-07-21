@@ -1,31 +1,44 @@
 
-var listener = new ROSLIB.Topic({
-      ros : ros,
-      name : 'some_topic',
-      messageType : 'mm',
-      throttle_rate:window.throttle_rate ,
-    });
+Vue.component('test' , { 
+	template: '\
+		<div>\
+		This is the cusmtos one\
+		</div>\
+	'
+})
+
+Vue.component('simple' , { 
+	template: '\
+		<div>\
+		    <input v-model="input_text">\
+		    <button v-on:click="subscribe">\
+		     	Subscribe\
+		    </button>\
+		 </div>\
+	',
+	
+  data: function () {
 
 
-
-function load(robot_info  ){
-
-var vue_app_2 = new Vue({
-  el: '#subscription',
-  data: {
-    show: true ,
-    input_text : 'type the name of the topic (eg: clips/order)',
-    my_robot_info : robot_info ,
-    ros_topic : listener 
+  	return {
+  	    show: true ,
+  	    input_text : 'clips/order', 
+  	}
   },
 
   methods: {
 
-  	subscribe: function (){
+  	subscribe: function (){  
 
-	  	this.ros_topic.name = this.input_text ;	  	
-	  	this.ros_topic.subscribe(this.updateValues);
-	  	
+		var ros_topic = new ROSLIB.Topic({
+		      ros : ros,
+		      name : 'some_topic',
+		      messageType : 'mm',
+		      throttle_rate:window.throttle_rate ,
+		    });
+
+	  	ros_topic .name = this.input_text;	 	
+	  	ros_topic .subscribe(this.updateValues);
 	},
 	
 	updateValues: function(message) {
@@ -53,13 +66,7 @@ var vue_app_2 = new Vue({
 	  	console.log ( this.input_text );
 	}
 	
-   }
-
-
-
+  }
 });
-
-}
-
 
 

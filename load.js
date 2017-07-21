@@ -23,11 +23,9 @@ var mps_monitor;
 var robot_info
 
 
-
 window . $layout_container = $("<div> <div>") . addClass ("layout_container"); 
 window . $layout_side = $("<div> <div>") . addClass ("layout_side") ;
 window . $production = $("<div> </div>"). addClass ("wedgit").addClass("production");
-
 
 
 function connect() {

@@ -12,8 +12,6 @@ var ros_3 ;
 var intialiazed_ = false;
 var listener= {} ;
 
-function connect() {
- 
   // Connect to ROS.
   var r1_con ;
   var r2_con ;
@@ -39,23 +37,18 @@ function connect() {
 
   }
 
-   ros = r1_con; 
-   ros_2 = r2_con;
-   ros3 = r3_con; 
+  ros = r1_con; 
+  ros_2 = r2_con;
+  ros3 = r3_con; 
+
+function connect() {
+ 
 
 
   r1_con.on('connection', function() {
     var robot_info = { name: "R1"  , connection : r1_con , alive: true }  ;
     __robots.push (  robot_info ) ;  
-
-      listener = new ROSLIB.Topic({
-          ros : ros,
-          name : 'some_topic',
-          messageType : 'mm',
-          throttle_rate:window.throttle_rate ,
-        });
-
-     load( robot_info );
+      
   });
 
  r2_con.on('connection', function() {
@@ -95,3 +88,10 @@ r3_con.on('close', function() {
 
 }
 
+
+
+// var robot_1_connection = new Vue {
+
+
+
+// } 

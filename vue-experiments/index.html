@@ -11,29 +11,25 @@
     <script src="../lib/ros3djs/build/ros3d.min.js"></script>
 
     <script src="https://unpkg.com/vue"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="connect.js"></script>
-
- 
+   
+    <link rel="stylesheet" type="text/css" href="style.css">
 
   </head>
 
-  <body onload="connect()">
+  <body >
 
-
-  <div id="subscription">
-    
-   
-    <button v-on:click="subscribe">
-      Subscribe
-    </button>
-    <input v-model="input_text">
-
-    <p> {{ my_robot_info.name}}</p>
+  <div id= "app_root"> 
+    <p> {{status}} </P>
+    <test></test>
+    <simple> </simple>
 
   </div>
 
+
+  
   <script src="subscribe.js"></script>  
+  <script src="root.js"></script>  
 
   </body>
 
