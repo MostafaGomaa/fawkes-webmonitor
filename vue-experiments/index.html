@@ -20,9 +20,16 @@
   <body >
 
   <div id= "app_root"> 
-    <p> {{status}} </P>
-    <test></test>
-    <simple> </simple>
+    <div> <p>Robot 1: {{connections.R1.isConnected ? 'connected' : 'notconnected' }} </p> </div>
+    <div> <p>Robot 2: {{connections.R2.isConnected ? 'connected' : 'notconnected' }} </p></div>
+    <div> <p>Robot 3: {{connections.R3.isConnected ? 'connected' : 'notconnected' }} </p> </div>
+    <button v-on:click="print">\
+          Subscribe\
+        </button>\
+
+    
+    
+    <simple-wedgit> </simple-wedgit> 
 
   </div>
 

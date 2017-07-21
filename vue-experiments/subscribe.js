@@ -7,7 +7,7 @@ Vue.component('test' , {
 	'
 })
 
-Vue.component('simple' , { 
+Vue.component('simple-wedgit' , { 
 	template: '\
 		<div>\
 		    <input v-model="input_text">\
@@ -18,8 +18,6 @@ Vue.component('simple' , {
 	',
 	
   data: function () {
-
-
   	return {
   	    show: true ,
   	    input_text : 'clips/order', 
