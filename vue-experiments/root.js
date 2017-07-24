@@ -77,14 +77,15 @@ var root_vue = new Vue({
         that. topics_data [robot_name] [topic_name] 
             = Object.assign({}, that. topics_data [robot_name] [topic_name] , { ros: ros_topic , data: {} } )
         console.log(that. topics_data [robot_name] [topic_name])
-        this.subscribe(robot_name , topic_name.valueOf() ) 
+        // this.subscribe(robot_name , topic_name.valueOf() ) 
       }
     },
 
     subscribe: function(robot_name , topic_name ){
         var that = this;
         this. topics_data [robot_name] [topic_name] .ros .subscribe (function (message){
-          console.log (that. topics_data);
+          // console.log (that. topics_data);
+          console.log (message);
           Vue.set (that. topics_data [robot_name] [topic_name], 'data' , message);
         }); 
       },
