@@ -108,14 +108,21 @@ Vue.component('order' , {
 	data: function () {
 		return{
 			id : "",
-
-			classObject: {
-  				order : true
-  			},
-
   	    	show: true
   		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+	  			order : true,
+	  			"active-order" : (this.order_data["in-production"][0] > 0)
+  			}
+  				
+  		}
   	}
+
+
 });
 
 
