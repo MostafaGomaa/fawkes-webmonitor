@@ -15,6 +15,7 @@ Vue.component('agent-widget' , {
 							:robot_name="robot_name"> 											\
 						Loading Holding !! 														\
 					</holding> 																	\
+					<state :state_data="stateTopic"> Loading State !!  </state>					\
 					</div>																		\
 				</div> 																			\
 				',
@@ -40,6 +41,10 @@ Vue.component('agent-widget' , {
 
   		holdingTopic: function (){
   			return this.topics.clips["holding"][0];
+  		},
+
+  		stateTopic: function (){
+  			return this.topics.clips["state"][0];
   		},
 
  		productOfHolding: function (){
@@ -100,8 +105,9 @@ Vue.component('holding' , {
 	props: [ 'holding_data', 'workpiece_data' , 'robot_name' ],
 	template: '	<div :id="generatedID"																\
 					 :class= "classObject" >														\
-					<p> Holding: {{holding}}</p>													\
-					<workpiece :topic_data="workpiece_data"> Loading Workpiece !! </workpiece> 		\
+					<sup> Holding: </sup> <br>														\
+					<workpiece v-if="isHolding" :topic_data="workpiece_data"> Loading Workpiece !! </workpiece> <br>	\
+					<sub>{{holdingValue}} </sub>												\
 				</div> 																				\
 				',
 
@@ -124,12 +130,56 @@ Vue.component('holding' , {
   			return this.id_prefix + this.robot_name;
   		},
 
-  		holding: function(){
+  		holdingValue: function(){
   			return this.holding_data.fields[0];
+  		},
+
+  		isHolding: function(){
+  			return this.holding_data.fields[0] != "NONE";
   		}
 
   	}
 });
+
+
+
+
+Vue.component('state' , { 
+	props: [ 'state_data', 'robot_name' ],
+	template: '	<div :id="generatedID"																\
+					 :class= "classObject" >														\
+					<sup> State:</sup> <br> 														\
+					<sub> {{stateValue}}</sub> 														\
+				</div> 																				\
+				',
+
+	data: function () {
+		return{
+			id_prefix: "state__",
+  	    	show: true 
+  		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+	  			wedgit : true,
+	  			container_header_element : true
+  			}	
+  		},
+
+  		generatedID: function(){
+  			return this.id_prefix + this.robot_name;
+  		},
+
+  		stateValue: function(){
+  			return this.state_data.fields[0];
+  		}
+
+  	}
+});
+
+
 
 
 
