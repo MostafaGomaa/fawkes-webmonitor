@@ -61,51 +61,78 @@
 //   }
 
 
-Vue.component('product' , { 
-	
-	props: ['product_data'],	
-	template: '<div :style="styleObject" :class="classObject">			\
-				<div :style="{ backgroundColor : getCapColor }"			\
-					class="products_cap" > 								\
-					</div> 												\
-				<div v-for = "item in product_data.rings"				\
-					:style="{ backgroundColor : item }"					\
-					class="products_ring" > 							\
-					</div> 												\
-					<div :style="{ backgroundColor : getBaseColor }"	\
-					class="products_base" > 							\
-					</div>											\
-				</div>',
+Vue.component('workpiece' , { 
+			// \
+			// 	<div v-for = "item in workpiece_date.rings"									\
+			// 		 :style="{ backgroundColor : item }"									\
+			// 		 :class="classObject(workpieceTypes.ring)" > 							\
+			// 		</div> 															
+	props: ['workpiece_data'],	
+	template: '																				\
+			<div :style="styleObject" :class="classObject(workpieceTypes.product)">			\
+				<div :style="{ backgroundColor : getCapColor }"								\
+					 :class="classObject(workpieceTypes.cap)" > 							\
+					</div> 																	\
+				<div v-if = "getRingCount > 2"												\
+					 :style="{ backgroundColor : getRingColor(2) }"							\
+					 :class="classObject(workpieceTypes.ring)" > 							\
+				</div> 																		\
+				<div v-if = "getRingCount > 1"												\
+					 :style="{ backgroundColor : getRingColor(1) }"							\
+					 :class="classObject(workpieceTypes.ring)" > 							\
+				</div> 																		\
+				<div v-if = "getRingCount > 0"												\
+					 :style="{ backgroundColor : getRingColor(0) }"							\
+					 :class="classObject(workpieceTypes.ring)" > 							\
+				</div> 																		\
+				<div :style="{ backgroundColor : getBaseColor }"							\
+					 :class="classObject(workpieceTypes.base)" > 							\
+				</div>																		\
+			</div>',
 	data: function () {
 		return{
 			id : '',
-			classObject: { product : true},
-			styleObject: {}
+			styleObject: {},
+			workpieceTypes: {
+				base : 0,
+				cap: 1,
+				ring: 2,
+				product:3
+			}
   		}	
   	},
 
-  	computed: {
-  		styleObject: function (){
-
+  	methods : {
+  		classObject: function(workpiece_type){
+  			return {
+  				product:  (workpiece_type == this.workpieceTypes.product) ,
+  				products_base: (workpiece_type == this.workpieceTypes. base),
+  				products_cap: (workpiece_type == this.workpieceTypes.cap),
+  				products_ring: (workpiece_type == this.workpieceTypes.ring)
+  			}
   		},
 
+  		getRingColor: function (ring_index){
+  			return this.workpiece_data["rings"][ring_index];
+
+  		}
+  	},
+
+
+  	computed: {
+
   		getBaseColor: function (){
-  			return this.product_data["base"][0];
+  			return this.workpiece_data["base"][0];
 
   		},
 
   		getCapColor: function (){
-  			return this.product_data["cap"][0];
-
-  		},
-
-  		getRingColor: function (ring_index){
-  			return this.product_data["rings"][0][ring_index];
+  			return this.workpiece_data["cap"][0];
 
   		},
 
   		getRingCount: function (){
-  			return this.product_data["rings"][0].length();
+  			return this.workpiece_data["rings"].length;
 
   		}
   	}
@@ -122,7 +149,7 @@ Vue.component('orders-widget' , {
 					<h2> {{title}}</h2> 									\
 					<button v-on:click="init"> starr </button> 				\
 					<div v-for= "item in topics.clips.order">				\
-						<product :product_data="getProductForOrder(item)"  > </product>\
+						<workpiece :workpiece_data="getProductForOrder(item)"  > </workpiece>\
 						<br>												\
 					</div>													\
 				</div> 														\
@@ -158,12 +185,11 @@ Vue.component('orders-widget' , {
   			},
   		//TODO: i could not make this work as a computed..Figure out why and do it
   		getProductForOrder: function (order){
-					console.log( order["product-id"][0].constructor )
-
+			// console.log( order["product-id"][0].constructor )
   			for (var i in this.topics.clips.product){
   				var product = this.topics.clips.product[i];
-  				console.log( order["product-id"][0] )
-  				console.log(product["id"][0]);
+  				// console.log( order["product-id"][0] )
+  				// console.log(product["id"][0]);
   	
   				if (product["id"][0] == order["product-id"][0] )
 				{
