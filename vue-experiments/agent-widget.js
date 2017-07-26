@@ -16,6 +16,10 @@ Vue.component('agent-widget' , {
 						Loading Holding !! 														\
 					</holding> 																	\
 					<state :state_data="stateTopic"> Loading State !!  </state>					\
+					<br>																		\
+					<running-tasks :tasks_data="tasksTopic" :steps_data="stepsTopic"> 			\
+						Loading Running Task !! 												\
+					</running-tasks>  															\
 					</div>																		\
 				</div> 																			\
 				',
@@ -30,7 +34,7 @@ Vue.component('agent-widget' , {
   			},
   	    	show: true ,
 	  	    topics: { 
-		  	    	clips: { "lock-role": [] , holding: [] , state: [] , tasks: [] , "locked-resource" : [] , skills: [] , product: [] },
+		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : [] , skills: [] , product: [] , step: []},
 	  	    		}
   		}
   	},
@@ -47,6 +51,13 @@ Vue.component('agent-widget' , {
   			return this.topics.clips["state"][0];
   		},
 
+  		tasksTopic: function(){
+  			return this.topics.clips["task"];
+  		},
+
+  		stepsTopic: function(){
+  			return this.topics.clips["step"];
+  		},
  		productOfHolding: function (){
 			// console.log( order["product-id"][0].constructor )
   			for (var i in this.topics.clips.product){
@@ -142,8 +153,6 @@ Vue.component('holding' , {
 });
 
 
-
-
 Vue.component('state' , { 
 	props: [ 'state_data', 'robot_name' ],
 	template: '	<div :id="generatedID"																\
@@ -178,6 +187,110 @@ Vue.component('state' , {
 
   	}
 });
+
+
+
+
+Vue.component('running-tasks' , { 
+	props: [ 'tasks_data', 'steps_data' , 'robot_name' ],
+	template: '	<div :id="generatedID"										\
+					 :class= "classObject" >								\
+					<h2> Running Tasks: </h2> 								\
+					<task v-for="item in tasks_data" 						\
+							v-if="isRunningTask(item)"						\
+							:task_data="item" 								\
+							:relative_steps_data="stepsOfTask(item)"> 		\
+							Loading Running Task !! 						\
+					</task>													\
+				</div> 														\
+				',
+
+	data: function () {
+		return{
+			id_prefix: "tasks__",
+  	    	show: true 
+  		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+	  			wedgit : true
+	  		}	
+  		},
+
+  		generatedID: function(){
+  			return this.id_prefix + this.robot_name;
+  		},
+
+  		steps__: function(){
+  			return this.id_prefix + this.robot_name;
+  		}
+  	},
+
+  	methods:{  		
+  		isRunningTask: function (taskObject){
+		  	return taskObject.state == "running";
+		},
+
+		stepsOfTask: function (taskObject){
+			var steps_of_task = [];
+			for (var task_step_index in taskObject.steps )
+			{
+				for(var step_index in this.steps_data )
+					{
+					 var step = this.steps_data[step_index];
+
+						if ( step.id[0] == taskObject.steps[task_step_index] )
+						{
+							steps_of_task.push(step);
+						}
+				}
+			}
+		 return steps_of_task;
+		}
+
+  	}
+});
+
+
+Vue.component('task' , { 
+	props: [ 'task_data', 'relative_steps_data' , 'robot_name' ],
+	template: '	<div :class= "classObject" >														\
+					<p>  <b> {{task_data.name[0]}} </b> <sup> {{task_data.priority[0]}}</sup> </p>	\
+					<ol>																			\
+						<li v-for="item in relative_steps_data"> 									\
+							<span> 																	\
+								<b> {{item["name"][0]}} </b> 										\
+								<sup> {{item["task-priority"][0]}} </sup> 							\
+								 {{item["machine"][0]}}  											\
+								<sub> {{item["machine-feature"][0]}} </sub> 						\
+								Lock: <b> {{item["lock"][0]}} </b> 									\
+							</span> 																\
+						</li> 																		\
+					</ol>																			\
+				</div> 																				\
+				',
+
+	data: function () {
+		return{
+  	    	show: true 
+  		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+  			}	
+  		},
+
+  		generatedID: function(){
+  			return this.id_prefix + this.robot_name;
+  		}
+  	}
+});
+
+
 
 
 
