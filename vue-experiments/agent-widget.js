@@ -259,7 +259,7 @@ Vue.component('task' , {
 	template: '	<div :class= "classObject" >														\
 					<p>  <b> {{task_data.name[0]}} </b> <sup> {{task_data.priority[0]}}</sup> </p>	\
 					<ol>																			\
-						<li v-for="item in relative_steps_data"> 									\
+						<li v-for="item in relative_steps_data" :class= "{highlight : isRunningStep(item) }"> 									\
 							<span> 																	\
 								<b> {{item["name"][0]}} </b> 										\
 								<sup> {{item["task-priority"][0]}} </sup> 							\
@@ -286,6 +286,12 @@ Vue.component('task' , {
 
   		generatedID: function(){
   			return this.id_prefix + this.robot_name;
+  		}
+  	},
+
+  	methods: {
+  		isRunningStep: function( stepObject){
+  			return stepObject["state"][0] == "running";
   		}
   	}
 });
