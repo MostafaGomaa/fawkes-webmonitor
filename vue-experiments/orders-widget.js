@@ -61,71 +61,118 @@
 //   }
 
 
-
-
-
-Vue.component('orders-widget' , { 
-	template: ' 								\
-		<div v-bind:class= "classObject" > 		\
-			<h2> Orders:</h2> 					\
-			<button v-on:click="init"> starr </button> \
-			<p> </p> 							\
-		</div> 									\
-	',
+Vue.component('product' , { 
 	
-  data: function () 
-  {
-  	return{
-  		classObject: {
-  			col_element : true
+	props: ['product_data'],	
+	template: '<div :style="styleObject" :class="classObject">			\
+				<div :style="{ backgroundColor : getCapColor }"			\
+					class="products_cap" > 								\
+					</div> 												\
+				<div v-for = "item in product_data.rings"				\
+					:style="{ backgroundColor : item }"					\
+					class="products_ring" > 							\
+					</div> 												\
+					<div :style="{ backgroundColor : getBaseColor }"	\
+					class="products_base" > 							\
+					</div>											\
+				</div>',
+	data: function () {
+		return{
+			id : '',
+			classObject: { product : true},
+			styleObject: {}
+  		}	
+  	},
+
+  	computed: {
+  		styleObject: function (){
+
   		},
-		
-		wedgit_id : "orders_widget",
 
-  	    show: true ,
+  		getBaseColor: function (){
+  			return this.product_data["base"][0];
 
-  	    topics: { 
-	  	    	clips: { order: {} , product: {} },
-  	    		}
-  	}  
-  },
+  		},
 
-  methods: {
-   
-    init: function (robot_name){
-      var that = this;
-      console.log(this.topics);
-      for ( var processor_name in this. topics){
-	    for (var topic_name in this. topics [processor_name]){
-	    	console.log (processor_name +"/"  + topic_name );
-	        
-	        var ros_topic = new ROSLIB.Topic({
-	          ros: ros,
-	          name: processor_name +"/" + topic_name ,
-	          messageType: 'mm',
-	          throttle_rate: window. throttle_rate ,
-	         }); 
+  		getCapColor: function (){
+  			return this.product_data["cap"][0];
 
-	        //Local Vue instace Subscribe stub workaround for passing buy value
-	  		this .subscribe(ros_topic , processor_name.valueOf() , topic_name.valueOf() );
-	      }
-      }
+  		},
 
-    },
+  		getRingColor: function (ring_index){
+  			return this.product_data["rings"][0][ring_index];
 
-    subscribe: function (ros_topic , processor_name , topic_name ){     
-      	var that = this; 
-        ros_topic .subscribe( function (message){
-			Vue.set (that. topics [processor_name], topic_name , message[topic_name] );
-			console.log(that.topics);
-        }) ;
+  		},
 
-    }
-	
-  }
+  		getRingCount: function (){
+  			return this.product_data["rings"][0].length();
 
+  		}
+  	}
 
 
 });
 
+
+Vue.component('orders-widget' , { 
+	
+	extends : widget,
+	
+	template: '	<div v-bind:class= "classObject" > 							\
+					<h2> {{title}}</h2> 									\
+					<button v-on:click="init"> starr </button> 				\
+					<div v-for= "item in topics.clips.order">				\
+						<product :product_data="getProductForOrder(item)"  > </product>\
+						<br>												\
+					</div>													\
+				</div> 														\
+				',
+
+	data: function () {
+		return{
+			id : "orders_widget",
+
+			title: "Orders",
+
+			classObject: {
+  				col_element : true
+  			},
+		
+  	    	show: true ,
+
+	  	    topics: { 
+		  	    	clips: { order: [] , product: [] },
+	  	    		}
+  		}	
+  	}
+
+  ,
+
+  methods: {
+  		getProductById: function (id){
+  			for (var i in this.topics.clips.product){
+  				var product = this.topics.clips.product[i];
+  				if (product.id[0] === id )
+				{return product}
+				}
+  			},
+  		//TODO: i could not make this work as a computed..Figure out why and do it
+  		getProductForOrder: function (order){
+					console.log( order["product-id"][0].constructor )
+
+  			for (var i in this.topics.clips.product){
+  				var product = this.topics.clips.product[i];
+  				console.log( order["product-id"][0] )
+  				console.log(product["id"][0]);
+  	
+  				if (product["id"][0] == order["product-id"][0] )
+				{
+					return product
+				}
+				}
+  			}
+  		}
+  
+
+});
 
