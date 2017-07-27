@@ -14,11 +14,11 @@ html, body {
     left: 0%;
 }
 
-/*.layout_side{
+.layout_side{
     width : 15% ;
     position: absolute;
     right: 0%;
-}*/
+}
 
 
 /*This is avery bad css and needs to be cahnged
