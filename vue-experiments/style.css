@@ -115,17 +115,17 @@ div[id^="skills__"] p
        display: inline-block;
 }
 
-div[id^="skills__"] p.running span
+div[id^="skills__"] li.running span
 {
        display: inline-block;
 }
 
-div[id^="skills__"] p.done span.FINAL
+div[id^="skills__"] ul.done span.FINAL
 {
        color: green;
 }
 
-div[id^="skills__"] p.done span.FAILED
+div[id^="skills__"] ul.done span.FAILED
 {
        color: red;
 }
