@@ -1,11 +1,11 @@
 
 Vue.component('agent-widget' , { 
 
+
 	extends : widget,
 
 	template: '	<div v-bind:class= "classObject" > 												\
-					<h2> {{title}}</h2> 														\
-					<button v-on:click="init"> start </button> 									\
+					<h1> {{robot_name}}</h1> 													\
 																								\
 					<lock-role :topic_data="lockRoleTopic"  									\
 								:robot_name="robot_name"> 										\
@@ -48,17 +48,24 @@ Vue.component('agent-widget' , {
 		return{
 			id : "agent_widget",
 			title: "Agent Info",
-			robot_name: "R-1",
-			classObject: {
-  				container : true
-  			},
+			// robot_name: "R-1", replaced with the prop
+			
   	    	show: true ,
 	  	    topics: { 
 		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : []  , product: [] , step: [] , skill: [] , "skill-done" : [], "skill-to-execute": [] }
 	  	    		}
   		}
   	},
+
+
   	computed: {
+  		classObject: function (){
+  				return {
+  					container : true,
+  					inactive : (!this.active)
+  				}
+  			},
+
   		lockRoleTopic: function (){
   			return this.topics.clips["lock-role"][0];
   		}, 
