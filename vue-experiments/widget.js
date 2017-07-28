@@ -1,4 +1,7 @@
 var widget = { 
+	
+	props: [ 'robot_name' ,'ros_connection' , 'active' , 'subscribe_to_topics'],
+
 	template: ' 								\
 		<div v-bind:id= "id" 					\
 			v-bind:class= "classObject"  > 		\
@@ -10,20 +13,17 @@ var widget = {
   {
   	return{
   		id : 'default_widget_id',
-
-  		classObject: {},
 		
 		title : 'Default Wedgit',
 
    	    show: true ,
-
   	    topics: {}
   	}  
   },
 
   methods: {
    
-    init: function (robot_name){
+    init: function (){
       var that = this;
       console.log(this.topics);
       for ( var processor_name in this. topics){
@@ -31,7 +31,7 @@ var widget = {
 	    	console.log (processor_name +"/"  + topic_name );
 	        
 	        var ros_topic = new ROSLIB.Topic({
-	          ros: ros,
+	          ros: this.ros_connection,
 	          name: processor_name +"/" + topic_name ,
 	          messageType: 'mm',
 	          throttle_rate: window. throttle_rate ,
@@ -53,6 +53,19 @@ var widget = {
 
     }
 	
+  },
+
+   watch: {
+  	 subscribe_to_topics: {
+     handler: function (val){
+        console.log(val);
+        this.init ()
+      },
+      deep: true 
+    }
+
   }
+
+
 
 };
