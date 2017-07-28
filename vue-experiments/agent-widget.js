@@ -5,12 +5,15 @@ Vue.component('agent-widget' , {
 	extends : widget,
 
 	template: '	<div v-bind:class= "classObject" > 												\
-					<h1> {{robot_name}}</h1> 													\
+					<h3> {{robot_name}}</h3> 													\
 																								\
 					<lock-role :topic_data="lockRoleTopic"  									\
 								:robot_name="robot_name"> 										\
 						Loading Lock Role !! 													\
 					</lock-role> 																\
+					<state :state_data="stateTopic"> 											\
+							Loading State !!  													\
+					</state>																	\
 																								\
 					<holding :holding_data="holdingTopic" 										\
 								:workpiece_data="productOfHolding" 								\
@@ -18,9 +21,9 @@ Vue.component('agent-widget' , {
 						Loading Holding !! 														\
 					</holding> 																	\
 																								\
-					<state :state_data="stateTopic"> 											\
-							Loading State !!  													\
-					</state>																	\
+					<mps-reset :topics_data="mpsResetTopic"> 									\
+							Loading Reset Msg !!  												\
+					</mps-reset>																\
 																								\
 					<br>																		\
 																								\
@@ -52,7 +55,7 @@ Vue.component('agent-widget' , {
 			
   	    	show: true ,
 	  	    topics: { 
-		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : []  , product: [] , step: [] , skill: [] , "skill-done" : [], "skill-to-execute": [] }
+		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : []  , product: [] , step: [] , skill: [] , "skill-done" : [], "skill-to-execute": [], "mps-reset": [] }
 	  	    		}
   		}
   	},
@@ -102,6 +105,9 @@ Vue.component('agent-widget' , {
   			return this.topics.clips["skill-to-execute"];
   		},
 
+  		mpsResetTopic: function(){
+  			return this.topics.clips["mps-reset"];
+  		},
 
  		productOfHolding: function (){
 			// console.log( order["product-id"][0].constructor )
@@ -181,7 +187,7 @@ Vue.component('holding' , {
   		classObject: function (){
   			return {
 	  			wedgit : true,
-	  			container_header_element : true
+	  			// container_header_element : true
   			}	
   		},
 
@@ -205,8 +211,7 @@ Vue.component('state' , {
 	props: [ 'state_data', 'robot_name' ],
 	template: '	<div :id="generatedID"																\
 					 :class= "classObject" >														\
-					<sup> State:</sup> <br> 														\
-					<sub> {{stateValue}}</sub> 														\
+					<h3> {{stateValue}}</h3> 														\
 				</div> 																				\
 				',
 
@@ -236,8 +241,65 @@ Vue.component('state' , {
   	}
 });
 
+Vue.component('mps-reset' , { 
 
+	props: [ 'topics_data' , 'robot_name' ],
 
+	template: '	<div :id="generatedID"												\
+					 :class= "classObject" >										\
+					<h3> Reset Mps: </h3>											\
+																					\
+					<ul v-if="anMpsResetExists" 									\
+						:class="mpsResetClassObject"> 								\
+						<li v-for= "item in topics_data"> 							\
+							<span>													\
+							 	{{item["machine"][0]}}  							\
+								&nbsp 												\
+								Lock: <b> {{item["lock"][0]}} </b> 					\
+							</span> 												\
+						</li>														\
+					</ul> 															\
+					<p v-if="!anMpsResetExists">									\
+						No Facts Available ! 										\
+					</p>															\
+																					\
+				</div> 																\
+				',
+
+	data: function () {
+		return{
+			id_prefix: "mps_reset__",
+  	    	show: true 
+  		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+	  			wedgit : true
+	  		}	
+  		},
+
+  		mpsResetClassObject: function (){
+  			return {
+	  			running : true
+	  		}	
+  		}, 
+
+  		generatedID: function(){
+  			return this.id_prefix + this.robot_name;
+  		},
+
+  		anMpsResetExists: function (){
+  			return this.topics_data.length > 0 ;
+  		},
+
+  	},
+
+  	methods: {
+
+  	}
+});
 
 Vue.component('running-tasks' , { 
 	props: [ 'tasks_data', 'steps_data' , 'robot_name' ],
