@@ -25,11 +25,13 @@ Vue.component('agent-widget' , {
 							Loading Reset Msg !!  												\
 					</mps-reset>																\
 																								\
-					<br>																		\
-																								\
 					<running-tasks :tasks_data="tasksTopic" :steps_data="stepsTopic"> 			\
 						Loading Running Task !! 												\
 					</running-tasks>  															\
+																								\
+					<wait-for-lock :topic_data="waitForLockTopic"> 								\
+						Loading Waited locks !! 												\
+ 					</wait-for-lock> 															\
 																								\
 					<locked-resources :topic_data="lockedResourceTopic" 						\
 										:robot_name="this.robot_name"> 							\
@@ -55,7 +57,7 @@ Vue.component('agent-widget' , {
 			
   	    	show: true ,
 	  	    topics: { 
-		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : []  , product: [] , step: [] , skill: [] , "skill-done" : [], "skill-to-execute": [], "mps-reset": [] }
+		  	    	clips: { "lock-role": [] , holding: [] , state: [] , task: [] , "locked-resource" : []  , product: [] , step: [] , skill: [] , "skill-done" : [], "skill-to-execute": [], "mps-reset": [] , "wait-for-lock":[] }
 	  	    		}
   		}
   	},
@@ -109,6 +111,9 @@ Vue.component('agent-widget' , {
   			return this.topics.clips["mps-reset"];
   		},
 
+  		waitForLockTopic: function(){
+  			return this.topics.clips["wait-for-lock"];
+  		},
  		productOfHolding: function (){
 			// console.log( order["product-id"][0].constructor )
   			for (var i in this.topics.clips.product){
@@ -246,11 +251,15 @@ Vue.component('mps-reset' , {
 	props: [ 'topics_data' , 'robot_name' ],
 
 	template: '	<div :id="generatedID"												\
-					 :class= "classObject" >										\
-					<h3> Reset Mps: </h3>											\
+						v-if="anMpsResetExists"										\
+					 	:class= "classObject">										\
+						<p :class="{wedgit_title : true}"> 							\
+						<b> Mps Reset </b> 											\
+					</p>									 						\
 																					\
-					<ul v-if="anMpsResetExists" 									\
-						:class="mpsResetClassObject"> 								\
+					<ul 															\
+						:class="elementClassObject"									\
+						:style= "elementStyleObject"> 								\
 						<li v-for= "item in topics_data"> 							\
 							<span>													\
 							 	{{item["machine"][0]}}  							\
@@ -259,7 +268,7 @@ Vue.component('mps-reset' , {
 							</span> 												\
 						</li>														\
 					</ul> 															\
-					<p v-if="!anMpsResetExists">									\
+					<p v-if="!show">												\
 						No Facts Available ! 										\
 					</p>															\
 																					\
@@ -269,22 +278,34 @@ Vue.component('mps-reset' , {
 	data: function () {
 		return{
 			id_prefix: "mps_reset__",
-  	    	show: true 
+  	    	show: false,
+  	    	show_after_removed_timeout : 100,
+  	    	blink_show_switch : true,  			//will be used to make the dev show and hide
+  	    	blink_timeout : 1
   		}
   	},
 
   	computed: {
   		classObject: function (){
   			return {
-	  			wedgit : true
+	  			wedgit : true,
 	  		}	
   		},
 
-  		mpsResetClassObject: function (){
+  		elementClassObject: function (){
   			return {
 	  			running : true
 	  		}	
   		}, 
+
+  		elementStyleObject: function (){
+  			if(this.anMpsResetExists)
+  				return { color : 'red' }
+  			else
+  				return { color : 'grey' }
+
+  			
+  		},
 
   		generatedID: function(){
   			return this.id_prefix + this.robot_name;
@@ -292,20 +313,46 @@ Vue.component('mps-reset' , {
 
   		anMpsResetExists: function (){
   			return this.topics_data.length > 0 ;
-  		},
-
+  		}
+  
   	},
 
-  	methods: {
+  	watch: {
+  	 anMpsResetExists: {
+	     handler: function (val){
+	        if(!val)
+	        {
+	        	var that = this;
+	        	this.blink_timeout = 1;
+	        	setTimeout(function() {that.show = false}, show_after_removed_timeout);
+	        }else
+	        {
+	        	this.show=true;
+	        	this.blink_show_switch= !this.blink_show_switch;
+	        }
+	      },
+	      deep: true 
+	    },
 
-  	}
+  	blink_show_switch: {
+	    handler: function (val){
+	        setTimeout(function() { that.blink_show_switch = !that.blink_show_switch }, that.blink_timeout );
+	      },
+	      deep: true 
+	    }
+	}
+
+
 });
 
 Vue.component('running-tasks' , { 
 	props: [ 'tasks_data', 'steps_data' , 'robot_name' ],
 	template: '	<div :id="generatedID"										\
 					 :class= "classObject" >								\
-					<b> Running Tasks: </b> 								\
+						<p :class="{wedgit_title : true}"> 					\
+						<b> Running Task </b> 								\
+					</p>									 				\
+																			\
 					<task v-for="item in tasks_data" 						\
 							v-if="isRunningTask(item)"						\
 							:task_data="item" 								\
@@ -386,10 +433,19 @@ Vue.component('task' , {
 								<b> {{item["name"][0]}} </b> 										\
 								<sup> {{item["task-priority"][0]}} </sup> 							\
 								 {{item["machine"][0]}}  											\
-								&nbsp 												\
-								<sub> {{item["machine-feature"][0]}} </sub> 						\
 								&nbsp 																\
-								Lock: <b> {{item["lock"][0]}} </b> 									\
+								<span>\
+								<b > 																\
+									[{{item["state"][0]}}] 											\
+								</b> 																\
+								<span>									\
+								<sup>Lock: </sup> 												\
+								{{item["lock"][0]}} 											\
+								</span>															\
+																							\
+								</span>																\
+			 																						\
+								&nbsp 																\
 							</span> 																\
 						</li> 																		\
 					</ol>																			\
@@ -426,7 +482,10 @@ Vue.component('locked-resources' , {
 	props: [ 'topic_data', 'robot_name' ],
 	template: '	<div :id="generatedID"							\
 					 :class= "classObject" >					\
-					<b> Locked Resources: </b>					\
+						<p :class="{wedgit_title : true}"> 			\
+						<b> Locked Resources </b> 				\
+					</p>									 	\
+																\
 																\
 					<ul v-if="aResourceLockExists"> 			\
 						<li v-for= "item in topic_data"> 		\
@@ -475,15 +534,83 @@ Vue.component('locked-resources' , {
 });
 
 
+Vue.component('wait-for-lock' , { 
+	props: [ 'topic_data', 'robot_name' ],
+	template: '	<div :id="generatedID"							\
+					 :class= "classObject" >					\
+					<p :class="{wedgit_title : true}"> 			\
+						<b> Wait For Lock: </b> 				\
+					</p>									 	\
+																\
+					<ul v-if="aFactExists"> 					\
+						<li v-for= "item in topic_data"> 		\
+							<span>								\
+								[ {{item["res"][0] }} ] 		\
+							</span> 							\
+							<sup> 								\
+								{{item["priority"][0]}} 		\
+							</sup> 								\
+																\
+							&nbsp 								\
+							<span v-if="isPlaceSet(item)">		\
+								{{item["place"][0] }} 			\
+							</span> 							\
+																\
+							<b >					 			\
+								{{item["state"][0]}} 			\
+							</b> 								\
+						</li>									\
+					</ul> 										\
+																\
+					<p v-if="!aFactExists">					\
+						Not Waiting for any Locks ! 			\
+					</p>										\
+				</div> 											\
+				',
+
+	data: function () {
+		return{
+			id_prefix: "wait_for_lock__",
+  	    	show: true 
+  		}
+  	},
+
+  	computed: {
+  		classObject: function (){
+  			return {
+	  			wedgit : true 
+	  		}	
+  		},
+
+  		generatedID: function(){
+  			return this.id_prefix + this.robot_name;
+  		},
+
+  		aFactExists: function(){
+  			return this.topic_data.length > 0;
+		 }
+  	},
+
+  	methods:{
+
+	  	isPlaceSet: function(factObject){
+	  		return factObject["place"][0] != "NOT-SET" ;
+	  	}
+	  }
+
+});
+
+
 Vue.component('skills' , { 
 
 	props: [ 'skills_data', 'skills_done_data', 'skills_to_execute_data' , 'robot_name' ],
 
 	template: '	<div :id="generatedID"												\
 					 :class= "classObject" >										\
-					<h3> Skills: </h3>												\
+					<p><b> Skills: </b></p>												\
 																					\
 					<!-- SKILL fact visualization--> 								\
+					<p>\
 					<ul v-if="aSkillExists" 										\
 						:class="skillClassObject"> 									\
 						<li v-for= "item in skills_data"> 							\
@@ -494,14 +621,15 @@ Vue.component('skills' , {
 								</sub> 												\
 							</span> 												\
 						</li>														\
-					</ul> 															\
+					</ul>\
+					</p>															\
 					<p v-if="!aSkillExists">										\
 						No Facts Available ! 										\
 					</p>															\
 																					\
 					<!-- SKILL-TO-EXECUTE fact visualization-->						\
-					<br>															\
-					<h3> Skills To Execute: </h3>									\
+					<br>\
+					<p><b> Skills To Execute: </b></p>									\
 					<ul v-if="aSkillToExecuteExists" 								\
 						:class="skillToExecuteClassObject"> 						\
 						<li v-for= "item in skills_to_execute_data"> 				\
@@ -522,8 +650,7 @@ Vue.component('skills' , {
 					</p>															\
 																					\
 					<!-- SKILL-DONE fact visualization-->							\
-					<br>															\
-					<h3> Skills Done: </h3> 										\
+					<p><b> Skills Done: </b> </p>									\
 					<ul v-if="aSkillDoneExists" 									\
 						:class="skillDoneClassObject"> 								\
 						<li v-for= "item in skills_done_data">		 				\
