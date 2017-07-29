@@ -33,9 +33,11 @@ __robots.push (  robot_info ) ;
 //   r3_con = new ROSLIB.Ros({ url : 'ws://localhost:4040' }); 
 // }
 
-r1_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-1:6060' });
-r2_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-2:6060' });
-r3_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-3:6060' });
+// r1_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-1:6060' });
+// r2_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-2:6060' });
+// r3_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-3:6060' });
+r4_con = new ROSLIB.Ros({ url : 'ws://robotino-laptop-4:6060' });
+
 
 
 ros = r1_con; 
@@ -46,14 +48,13 @@ var root_vue = new Vue({
   el:"#app_root",
   data : {
     
-    connections: { R1: r1_con,
-                   R2: r2_con,
-                   R3: r3_con
+    connections: {
+                  R4: r4_con
+
                  },
 
-    robot_names: { R1: "R-1",
-                   R2: "R-2",
-                   R3: "R-3"
+    robot_names: {
+                   R4: "R-4"
                  },
 
 
@@ -61,31 +62,38 @@ var root_vue = new Vue({
 
     subscribe_to_topics :{  R1: false,
                             R2: false,
-                            R3: false
+                            R3: false,
+                            R4: false
                           },
     
     topics_names: { R1 : [//"clips/lock-role" , "clips/order" , "clips/product" 
                           ],
                     R2 : ["clips/lock-role"],
                     R3 : [],
+                    R4 : []
                     },
 
     remote: false ,
 
     url: {  local: {  R1:  'ws://localhost:6060' ,
                       R2:  'ws://localhost:5050' ,
-                      R3:  'ws://localhost:4040' 
+                      R3:  'ws://localhost:4040' ,
+                      R4:  'ws://localhost:3030' 
+
                     },
     
             remote: { R1: 'ws://robotino-laptop-1:6060' ,
                       R2: 'ws://robotino-laptop-2:6060' ,
-                      R3: 'ws://robotino-laptop-3:6060' 
+                      R3: 'ws://robotino-laptop-3:6060' ,
+                      R4: 'ws://robotino-laptop-4:6060' 
+
                     },
           },
     // topics_data:  { R1: {topicName : {rostopice: {} , data: {} } },
     topics_data:  { R1: {},
                     R2: {},
-                    R3: {}
+                    R3: {},
+                    R4: {} 
                   },
 
   },
@@ -158,50 +166,71 @@ var root_vue = new Vue({
 
   created: function () {
     var that =  this; 
-    this.$watch('connections.R1.isConnected', function (val,oldVal) { this.onConnectionUpdated("R1") } , {deep:true} );
-    this.$watch('connections.R2.isConnected', function (val,oldVal) { this.onConnectionUpdated("R2") } , {deep:true} );
-    this.$watch('connections.R3.isConnected', function (val,oldVal) { this.onConnectionUpdated("R3") } , {deep:true} );
+  
 
-    this.connections.R1.on('connection', function() {
-      that.onConnection("R1");
+    // this.connections.R1.on('connection', function() {
+    //   that.onConnection("R1");
+    // });
+
+    // this.connections.R1.on('error', function(error) {
+    //   that.onConnectionError("R1",error);
+    // });
+
+    // this.connections.R1.on('close', function() {
+    //   that.onConnectionClose("R1");
+    // });
+
+
+
+    //  this.connections.R2.on('connection', function() {
+    //   that.onConnection("R2");
+    // });
+
+    // this.connections.R2.on('error', function(error) {
+    //   that.onConnectionError("R2",error);
+    // });
+
+    // this.connections.R2.on('close', function() {
+    //   that.onConnectionClose("R2");
+    // });
+
+
+
+    //  this.connections.R3.on('connection', function() {
+    //   that.onConnection("R3");
+    // });
+
+    // this.connections.R3.on('error', function(error) {
+    //   that.onConnectionError("R3",error);
+    // });
+
+    // this.connections.R3.on('close', function() {
+    //   that.onConnectionClose("R3");
+    // });
+
+    // this.connections.R4.on('connection', function() {
+    //   that.onConnection("R3");
+    // });
+
+    // this.connections.R4.on('error', function(error) {
+    //   that.onConnectionError("R3",error);
+    // });
+
+    // this.connections.R4.on('close', function() {
+    //   that.onConnectionClose("R3");
+    // });
+
+  this.connections.R4.on('connection', function() {
+      that.onConnection("R4");
     });
 
-    this.connections.R1.on('error', function(error) {
-      that.onConnectionError("R1",error);
+    this.connections.R4.on('error', function(error) {
+      that.onConnectionError("R4",error);
     });
 
-    this.connections.R1.on('close', function() {
-      that.onConnectionClose("R1");
+    this.connections.R4.on('close', function() {
+      that.onConnectionClose("R4");
     });
-
-
-
-     this.connections.R2.on('connection', function() {
-      that.onConnection("R2");
-    });
-
-    this.connections.R2.on('error', function(error) {
-      that.onConnectionError("R2",error);
-    });
-
-    this.connections.R2.on('close', function() {
-      that.onConnectionClose("R2");
-    });
-
-
-
-     this.connections.R3.on('connection', function() {
-      that.onConnection("R3");
-    });
-
-    this.connections.R3.on('error', function(error) {
-      that.onConnectionError("R3",error);
-    });
-
-    this.connections.R3.on('close', function() {
-      that.onConnectionClose("R3");
-    });
-
    
 
 
