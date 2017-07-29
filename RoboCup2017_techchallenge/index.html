@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+ 
+  <head>  
+    <meta charset="utf-8" />   
+
+    <script src="../lib/jquery-2.2.3.min.js" ></script>
+    <script src="../lib/three.js"></script>
+    <script src="../lib/eventemitter2.min.js"></script>
+    <script src="../lib/roslibjs/build/roslib.js"></script>
+    <script src="../lib/ros3djs/build/ros3d.min.js"></script>
+    <script src="../lib/vuejs/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+  </head>
+
+  <body >
+
+  <div id= "app_root"> 
+  <!--   <div> <p>Robot 1: {{connections.R1.isConnected ? 'connected' : 'notconnected' }} </p> </div>
+    <div> <p>Robot 2: {{connections.R2.isConnected ? 'connected' : 'notconnected' }} </p></div>
+    <div> <p>Robot 3: {{connections.R3.isConnected ? 'connected' : 'notconnected' }} </p> </div>
+      <button v-on:click="onConnectionUpdated('R1')">\
+       </button>\ -->
+
+      <simple-wedgit > </simple-wedgit> 
+     <!--  <orders-widget> Loading Orders Widget.. </orders-widget> -->
+     
+      <agent-widget :robot_name = "robot_names.R1" 
+                    :ros_connection = "connections.R1" 
+                    :active = "connections.R1.isConnected"
+                    :subscribe_to_topics="subscribe_to_topics.R1"  >
+       Loading Agent Widget.. 
+     </agent-widget>
+
+      <agent-widget :robot_name="robot_names.R2"
+                    :ros_connection="connections.R2" 
+                    :active = "connections.R2.isConnected" 
+                    :subscribe_to_topics="subscribe_to_topics.R2" >
+
+       Loading Agent Widget.. 
+     </agent-widget>
+
+      <agent-widget :robot_name="robot_names.R3"
+                    :ros_connection="connections.R3" 
+                    :active = "connections.R3.isConnected"
+                    :subscribe_to_topics="subscribe_to_topics.R3"  >
+       Loading Agent Widget.. 
+     </agent-widget>
+
+  <!-- <div id="test"> </div> -->
+
+  </div>
+
+  
+  <script src="subscribe.js"></script> 
+  <script src="widget.js"></script> 
+  <script src ="orders-widget.js"></script> 
+  <script src ="agent-widget.js"></script>  
+  <!-- <script src="exper.js"></script>   -->
+  <script src="root.js"></script>  
+
+  </body>
+
+</html>
+ 
