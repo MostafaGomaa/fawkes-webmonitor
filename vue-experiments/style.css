@@ -5,6 +5,16 @@ html, body {
 
 }
 
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+
+
+
 .layout_container{
     /*border: 3px dotted #73AD21;*/
     margin : 6px;
@@ -14,11 +24,11 @@ html, body {
     left: 0%;
 }
 
-.layout_side{
+/*.layout_side{
     width : 15% ;
     position: absolute;
     right: 0%;
-}
+}*/
 
 
 /*This is avery bad css and needs to be cahnged
@@ -105,17 +115,17 @@ div[id^="skills__"] p
        display: inline-block;
 }
 
-div[id^="skills__"] p.running span
+div[id^="skills__"] li.running span
 {
        display: inline-block;
 }
 
-div[id^="skills__"] p.done span.FINAL
+div[id^="skills__"] ul.done span.FINAL
 {
        color: green;
 }
 
-div[id^="skills__"] p.done span.FAILED
+div[id^="skills__"] ul.done span.FAILED
 {
        color: red;
 }

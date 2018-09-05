@@ -4,7 +4,7 @@ var order_facts;// to hold the updated json contaning the "order" facts
 
 window.throttle_rate = 1000;
 window.tf_throttle_rate = 1000;
-var remote = true;
+var remote = false;
 
 var __robots = [];
 
@@ -23,11 +23,9 @@ var mps_monitor;
 var robot_info
 
 
-
 window . $layout_container = $("<div> <div>") . addClass ("layout_container"); 
 window . $layout_side = $("<div> <div>") . addClass ("layout_side") ;
 window . $production = $("<div> </div>"). addClass ("wedgit").addClass("production");
-
 
 
 function connect() {
